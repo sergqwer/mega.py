@@ -15,7 +15,7 @@ import tempfile
 import shutil
 
 import requests
-from tenacity import retry, wait_exponential, retry_if_exception_type
+#from tenacity import retry, wait_exponential, retry_if_exception_type
 
 from .errors import ValidationError, RequestError
 from .crypto import (a32_to_base64, encrypt_key, base64_url_encode,
@@ -30,7 +30,7 @@ logger = logging.getLogger(__name__)
 class Mega:
     def __init__(self, options=None):
         self.schema = 'https'
-        self.domain = 'mega.io'
+        self.domain = 'mega.co.nz'
         self.timeout = 160  # max secs to wait for resp from api requests
         self.sid = None
         self.sequence_num = random.randint(0, 0xFFFFFFFF)
@@ -149,8 +149,8 @@ class Mega:
             sid = binascii.unhexlify('0' + sid if len(sid) % 2 else sid)
             self.sid = base64_url_encode(sid[:43])
 
-    @retry(retry=retry_if_exception_type(RuntimeError),
-           wait=wait_exponential(multiplier=2, min=2, max=60))
+    #@retry(retry=retry_if_exception_type(RuntimeError),
+    #       wait=wait_exponential(multiplier=2, min=2, max=60))
     def _api_request(self, data):
         params = {'id': self.sequence_num}
         self.sequence_num += 1
